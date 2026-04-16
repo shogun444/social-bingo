@@ -1,22 +1,29 @@
-import type { BingoSquareData } from "../types";
+import type { BingoSquareData, GameMode } from "../types";
 import { BingoBoard } from "./BingoBoard";
+import { DeckCard } from "./DeckCard";
 
 interface GameScreenProps {
   board: BingoSquareData[];
+  gameMode: GameMode;
+  currentCard: string | null;
   winningSquareIds: Set<number>;
   hasBingo: boolean;
   onSquareClick: (squareId: number) => void;
+  onDrawCard: () => void;
   onReset: () => void;
 }
 
 export function GameScreen({
   board,
+  gameMode,
+  currentCard,
   winningSquareIds,
   hasBingo,
   onSquareClick,
+  onDrawCard,
   onReset,
 }: GameScreenProps) {
-  const markedCount = board.filter((square) => square.isMarked).length;
+  const markedCount = gameMode === 'board' ? board.filter((square) => square.isMarked).length : 0;
 
   return (
     <main className="relative mx-auto flex min-h-screen max-w-6xl flex-col px-4 py-6 sm:px-6 lg:px-8">
@@ -50,15 +57,21 @@ export function GameScreen({
             </p>
             <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="rounded-3xl bg-[#05120a]/95 p-4 text-emerald-100 shadow-lg shadow-emerald-500/10">
-                <p className="text-sm text-emerald-200/70">Squares marked</p>
+                <p className="text-sm text-emerald-200/70">
+                  {gameMode === 'board' ? 'Squares marked' : 'Card deck mode'}
+                </p>
                 <p className="mt-2 text-3xl font-semibold text-emerald-100">
-                  {markedCount}/24
+                  {gameMode === 'board' ? `${markedCount}/24` : 'Tap to shuffle'}
                 </p>
               </div>
               <div className="rounded-3xl bg-[#05120a]/95 p-4 text-emerald-100 shadow-lg shadow-emerald-500/10">
                 <p className="text-sm text-emerald-200/70">Status</p>
                 <p className="mt-2 text-xl font-semibold text-emerald-100">
-                  {hasBingo ? "Bingo achieved" : "Keep going"}
+                  {gameMode === 'board'
+                    ? hasBingo
+                      ? 'Bingo achieved'
+                      : 'Keep going'
+                    : 'Draw a new question'}
                 </p>
               </div>
             </div>
@@ -70,9 +83,19 @@ export function GameScreen({
                 How to play
               </p>
               <ul className="mt-4 space-y-3 text-sm text-emerald-200/70">
-                <li>• Tap a square when you meet someone who matches it.</li>
-                <li>• The center space is free and already counts.</li>
-                <li>• Aim for a row, column, or diagonal to win.</li>
+                {gameMode === 'board' ? (
+                  <>
+                    <li>• Tap a square when you meet someone who matches it.</li>
+                    <li>• The center space is free and already counts.</li>
+                    <li>• Aim for a row, column, or diagonal to win.</li>
+                  </>
+                ) : (
+                  <>
+                    <li>• Tap the card to reveal a fresh creative prompt.</li>
+                    <li>• Each tap draws a new question from the deck.</li>
+                    <li>• Share, react, or keep the conversation moving.</li>
+                  </>
+                )}
               </ul>
             </div>
             <div className="rounded-[1.75rem] border border-emerald-500/10 bg-[#06120b]/95 p-5 shadow-inner">
@@ -80,8 +103,9 @@ export function GameScreen({
                 Quick tip
               </p>
               <p className="mt-3 text-sm text-emerald-200/70">
-                Focus on the easiest prompts first, then weave in the more
-                surprising ones.
+                {gameMode === 'board'
+                  ? 'Focus on the easiest prompts first, then weave in the more surprising ones.'
+                  : 'Keep the energy flowing by shuffling questions between every player.'}
               </p>
             </div>
           </div>
@@ -90,15 +114,19 @@ export function GameScreen({
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1.4fr_0.95fr]">
         <section className="rounded-[2rem] border border-emerald-500/10 bg-[#04100a]/95 p-6 shadow-2xl">
-          <BingoBoard
-            board={board}
-            winningSquareIds={winningSquareIds}
-            onSquareClick={onSquareClick}
-          />
+          {gameMode === 'board' ? (
+            <BingoBoard
+              board={board}
+              winningSquareIds={winningSquareIds}
+              onSquareClick={onSquareClick}
+            />
+          ) : (
+            <DeckCard currentCard={currentCard} onDrawCard={onDrawCard} />
+          )}
         </section>
 
         <aside className="space-y-6">
-          {hasBingo && (
+          {gameMode === 'board' && hasBingo && (
             <div className="rounded-[1.75rem] border border-slate-700/60 bg-slate-900/85 p-6 shadow-lg shadow-slate-950/20">
               <p className="text-sm uppercase tracking-[0.3em] text-slate-500">
                 Victory
@@ -115,12 +143,22 @@ export function GameScreen({
 
           <div className="rounded-[1.75rem] border border-white/10 bg-slate-950/90 p-6 shadow-inner">
             <p className="text-sm uppercase tracking-[0.3em] text-slate-500">
-              Board rules
+              {gameMode === 'board' ? 'Board rules' : 'Deck rules'}
             </p>
             <div className="mt-4 space-y-3 text-sm text-slate-300">
-              <p>• The free center square is pre-marked.</p>
-              <p>• Mark or unmark squares as you meet people.</p>
-              <p>• Progress is saved automatically in local storage.</p>
+              {gameMode === 'board' ? (
+                <>
+                  <p>• The free center square is pre-marked.</p>
+                  <p>• Mark or unmark squares as you meet people.</p>
+                  <p>• Progress is saved automatically in local storage.</p>
+                </>
+              ) : (
+                <>
+                  <p>• Tap the card to draw a new question.</p>
+                  <p>• Every new tap reveals a creative prompt.</p>
+                  <p>• Use the card to spark quick conversations.</p>
+                </>
+              )}
             </div>
           </div>
         </aside>

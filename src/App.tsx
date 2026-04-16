@@ -6,11 +6,14 @@ import { BingoModal } from "./components/BingoModal";
 function App() {
   const {
     gameState,
+    gameMode,
     board,
+    currentCard,
     winningSquareIds,
     showBingoModal,
     startGame,
     handleSquareClick,
+    drawCard,
     resetGame,
     dismissModal,
   } = useBingoGame();
@@ -24,9 +27,12 @@ function App() {
         ) : (
           <GameScreen
             board={board}
+            gameMode={gameMode}
+            currentCard={currentCard}
             winningSquareIds={winningSquareIds}
             hasBingo={gameState === "bingo"}
             onSquareClick={handleSquareClick}
+            onDrawCard={drawCard}
             onReset={resetGame}
           />
         )}

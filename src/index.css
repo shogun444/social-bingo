@@ -20,11 +20,21 @@ body,
 
 body {
   margin: 0;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    'Liberation Mono', 'Courier New', monospace;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
   color: #7cfc00;
-  background: radial-gradient(circle at top left, rgba(124, 252, 0, 0.08), transparent 20%),
-    radial-gradient(circle at bottom right, rgba(74, 222, 128, 0.08), transparent 18%),
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(124, 252, 0, 0.08),
+      transparent 20%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(74, 222, 128, 0.08),
+      transparent 18%
+    ),
     linear-gradient(180deg, #020401 0%, #050906 45%, #030603 100%);
   -webkit-tap-highlight-color: transparent;
 }

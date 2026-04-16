@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import type { BingoSquareData, BingoLine, GameState } from '../types';
+import type { BingoSquareData, BingoLine, GameState, GameMode } from '../types';
+import { questions } from '../data/questions';
 import {
   generateBoard,
   toggleSquare,
@@ -9,14 +10,17 @@ import {
 
 export interface BingoGameState {
   gameState: GameState;
+  gameMode: GameMode;
   board: BingoSquareData[];
+  currentCard: string | null;
   winningLine: BingoLine | null;
   winningSquareIds: Set<number>;
   showBingoModal: boolean;
 }
 
 export interface BingoGameActions {
-  startGame: () => void;
+  startGame: (mode: GameMode) => void;
+  drawCard: () => void;
   handleSquareClick: (squareId: number) => void;
   resetGame: () => void;
   dismissModal: () => void;
@@ -28,7 +32,9 @@ const STORAGE_VERSION = 1;
 interface StoredGameData {
   version: number;
   gameState: GameState;
+  gameMode?: GameMode;
   board: BingoSquareData[];
+  currentCard?: string | null;
   winningLine: BingoLine | null;
 }
 
@@ -44,6 +50,13 @@ function validateStoredData(data: unknown): data is StoredGameData {
   }
   
   if (typeof obj.gameState !== 'string' || !['start', 'playing', 'bingo'].includes(obj.gameState)) {
+    return false;
+  }
+  
+  if (
+    obj.gameMode !== undefined &&
+    (typeof obj.gameMode !== 'string' || !['board', 'deck'].includes(obj.gameMode))
+  ) {
     return false;
   }
   
@@ -80,11 +93,15 @@ function validateStoredData(data: unknown): data is StoredGameData {
       return false;
     }
   }
+
+  if (obj.currentCard !== undefined && obj.currentCard !== null && typeof obj.currentCard !== 'string') {
+    return false;
+  }
   
   return true;
 }
 
-function loadGameState(): Pick<BingoGameState, 'gameState' | 'board' | 'winningLine'> | null {
+function loadGameState(): Pick<BingoGameState, 'gameState' | 'gameMode' | 'board' | 'currentCard' | 'winningLine'> | null {
   // SSR guard
   if (typeof window === 'undefined') {
     return null;
@@ -101,7 +118,9 @@ function loadGameState(): Pick<BingoGameState, 'gameState' | 'board' | 'winningL
     if (validateStoredData(parsed)) {
       return {
         gameState: parsed.gameState,
+        gameMode: (parsed.gameMode as GameMode) || 'board',
         board: parsed.board,
+        currentCard: parsed.currentCard ?? null,
         winningLine: parsed.winningLine,
       };
     } else {
@@ -118,7 +137,13 @@ function loadGameState(): Pick<BingoGameState, 'gameState' | 'board' | 'winningL
   return null;
 }
 
-function saveGameState(gameState: GameState, board: BingoSquareData[], winningLine: BingoLine | null): void {
+function saveGameState(
+  gameState: GameState,
+  gameMode: GameMode,
+  board: BingoSquareData[],
+  currentCard: string | null,
+  winningLine: BingoLine | null
+): void {
   // SSR guard
   if (typeof window === 'undefined') {
     return;
@@ -128,7 +153,9 @@ function saveGameState(gameState: GameState, board: BingoSquareData[], winningLi
     const data: StoredGameData = {
       version: STORAGE_VERSION,
       gameState,
+      gameMode,
       board,
+      currentCard,
       winningLine,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -143,8 +170,14 @@ export function useBingoGame(): BingoGameState & BingoGameActions {
   const [gameState, setGameState] = useState<GameState>(
     () => loadedState?.gameState || 'start'
   );
+  const [gameMode, setGameMode] = useState<GameMode>(
+    () => loadedState?.gameMode || 'board'
+  );
   const [board, setBoard] = useState<BingoSquareData[]>(
     () => loadedState?.board || []
+  );
+  const [currentCard, setCurrentCard] = useState<string | null>(
+    () => loadedState?.currentCard || null
   );
   const [winningLine, setWinningLine] = useState<BingoLine | null>(
     () => loadedState?.winningLine || null
@@ -156,16 +189,36 @@ export function useBingoGame(): BingoGameState & BingoGameActions {
     [winningLine]
   );
 
+  const getRandomQuestion = useCallback(
+    (exclude?: string | null) => {
+      const pool = questions.filter((question) => question !== exclude);
+      return pool[Math.floor(Math.random() * pool.length)];
+    },
+    []
+  );
+
   // Save game state to localStorage whenever it changes
   useEffect(() => {
-    saveGameState(gameState, board, winningLine);
-  }, [gameState, board, winningLine]);
+    saveGameState(gameState, gameMode, board, currentCard, winningLine);
+  }, [gameState, gameMode, board, currentCard, winningLine]);
 
-  const startGame = useCallback(() => {
-    setBoard(generateBoard());
+  const startGame = useCallback((mode: GameMode) => {
+    setGameMode(mode);
+    if (mode === 'board') {
+      setBoard(generateBoard());
+      setCurrentCard(null);
+    } else {
+      setBoard([]);
+      setCurrentCard(getRandomQuestion(null));
+    }
     setWinningLine(null);
+    setShowBingoModal(false);
     setGameState('playing');
-  }, []);
+  }, [getRandomQuestion]);
+
+  const drawCard = useCallback(() => {
+    setCurrentCard((current) => getRandomQuestion(current));
+  }, [getRandomQuestion]);
 
   const handleSquareClick = useCallback((squareId: number) => {
     setBoard((currentBoard) => {
@@ -189,6 +242,7 @@ export function useBingoGame(): BingoGameState & BingoGameActions {
   const resetGame = useCallback(() => {
     setGameState('start');
     setBoard([]);
+    setCurrentCard(null);
     setWinningLine(null);
     setShowBingoModal(false);
   }, []);
@@ -199,11 +253,14 @@ export function useBingoGame(): BingoGameState & BingoGameActions {
 
   return {
     gameState,
+    gameMode,
     board,
+    currentCard,
     winningLine,
     winningSquareIds,
     showBingoModal,
     startGame,
+    drawCard,
     handleSquareClick,
     resetGame,
     dismissModal,
