@@ -45,6 +45,12 @@ Local app URL when running: `http://localhost:5173`
 - Keep Tailwind utility classes consistent and UI changes cohesive.
 - Use the workshop docs for context, not as a replacement for the code itself.
 
+## Design guide
+- The current theme is Retro Terminal Green with dark terminal tones, neon green accents, and monospace styling.
+- Use bold contrast for board squares and subtle glow/border details rather than vibrant gradients.
+- Preserve readability by keeping text crisp and spacing generous inside squares.
+- Avoid overly colorful or soft pastel styling; favor a focused terminal-inspired interface.
+
 ## Useful repo notes
 
 - Existing AI agent customizations live in `.github/agents/`.

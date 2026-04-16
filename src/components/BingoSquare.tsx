@@ -1,4 +1,4 @@
-import type { BingoSquareData } from '../types';
+import type { BingoSquareData } from "../types";
 
 interface BingoSquareProps {
   square: BingoSquareData;
@@ -8,27 +8,34 @@ interface BingoSquareProps {
 
 export function BingoSquare({ square, isWinning, onClick }: BingoSquareProps) {
   const baseClasses =
-    'relative flex items-center justify-center p-1 text-center border border-gray-300 rounded transition-all duration-150 select-none min-h-[60px] text-xs leading-tight';
+    "group relative flex aspect-square items-center justify-center rounded-3xl border p-4 text-center text-sm leading-tight transition duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400/80";
 
-  const stateClasses = square.isMarked
-    ? isWinning
-      ? 'bg-amber-200 border-amber-400 text-amber-900'
-      : 'bg-marked border-marked-border text-green-800'
-    : 'bg-white text-gray-700 active:bg-gray-100';
+  const stateClasses = square.isFreeSpace
+    ? "bg-[#0b1f0c] border-emerald-400/30 text-emerald-100 font-semibold shadow-inner shadow-emerald-500/10"
+    : square.isMarked
+      ? isWinning
+        ? "bg-[#d4ffe0] border-emerald-200 text-slate-950 shadow-inner shadow-emerald-300/20"
+        : "bg-[#0d1f10] border-emerald-500/20 text-emerald-200 shadow-inner shadow-emerald-500/10"
+      : "bg-[#020501] border-emerald-500/20 text-emerald-200 hover:border-emerald-300 hover:bg-[#082012] active:ring-2 active:ring-emerald-400/30";
 
-  const freeSpaceClasses = square.isFreeSpace ? 'font-bold text-sm' : '';
+  const labelClasses = square.isFreeSpace
+    ? "font-semibold uppercase tracking-[0.12em] text-emerald-100"
+    : "";
 
   return (
     <button
+      type="button"
       onClick={onClick}
       disabled={square.isFreeSpace}
-      className={`${baseClasses} ${stateClasses} ${freeSpaceClasses}`}
+      className={`${baseClasses} ${stateClasses}`}
       aria-pressed={square.isMarked}
-      aria-label={square.isFreeSpace ? 'Free space' : square.text}
+      aria-label={square.isFreeSpace ? "Free space" : square.text}
     >
-      <span className="wrap-break-word hyphens-auto">{square.text}</span>
+      <span className={labelClasses}>{square.text}</span>
       {square.isMarked && !square.isFreeSpace && (
-        <span className="absolute top-0.5 right-0.5 text-green-600 text-xs">✓</span>
+        <span className="absolute right-3 top-3 rounded-full bg-slate-900/90 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-100">
+          ✓
+        </span>
       )}
     </button>
   );
