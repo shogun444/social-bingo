@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import type { GameMode } from '../types';
+import { useState } from "react";
+import type { GameMode } from "../types";
 
 interface StartScreenProps {
   onStart: (mode: GameMode) => void;
 }
 
 export function StartScreen({ onStart }: StartScreenProps) {
-  const [selectedMode, setSelectedMode] = useState<GameMode>('board');
+  const [selectedMode, setSelectedMode] = useState<GameMode>("board");
 
   return (
     <div className="relative flex min-h-screen items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
@@ -38,7 +38,8 @@ export function StartScreen({ onStart }: StartScreenProps) {
                   Deck shuffle
                 </p>
                 <p className="mt-3 text-slate-300">
-                  Tap the card to reveal a random creative prompt and keep the fun moving.
+                  Tap the card to reveal a random creative prompt and keep the
+                  fun moving.
                 </p>
               </div>
             </div>
@@ -53,7 +54,8 @@ export function StartScreen({ onStart }: StartScreenProps) {
                 Choose your mode
               </h2>
               <p className="mt-3 text-sm leading-6 text-emerald-200/70">
-                Pick either classic Bingo or Card Deck Shuffle for a single-question flow.
+                Pick either classic Bingo or Card Deck Shuffle for a
+                single-question flow.
               </p>
             </div>
 
@@ -61,11 +63,11 @@ export function StartScreen({ onStart }: StartScreenProps) {
               <div className="grid gap-3 sm:grid-cols-2">
                 <button
                   type="button"
-                  onClick={() => setSelectedMode('board')}
+                  onClick={() => setSelectedMode("board")}
                   className={`rounded-3xl border px-4 py-4 text-left text-sm transition ${
-                    selectedMode === 'board'
-                      ? 'border-emerald-400/80 bg-emerald-400/10 text-emerald-100'
-                      : 'border-emerald-500/10 bg-[#04110b]/95 text-emerald-200/80'
+                    selectedMode === "board"
+                      ? "border-emerald-400/80 bg-emerald-400/10 text-emerald-100"
+                      : "border-emerald-500/10 bg-[#04110b]/95 text-emerald-200/80"
                   }`}
                 >
                   <p className="uppercase tracking-[0.3em] text-emerald-300/80">
@@ -75,11 +77,11 @@ export function StartScreen({ onStart }: StartScreenProps) {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setSelectedMode('deck')}
+                  onClick={() => setSelectedMode("deck")}
                   className={`rounded-3xl border px-4 py-4 text-left text-sm transition ${
-                    selectedMode === 'deck'
-                      ? 'border-emerald-400/80 bg-emerald-400/10 text-emerald-100'
-                      : 'border-emerald-500/10 bg-[#04110b]/95 text-emerald-200/80'
+                    selectedMode === "deck"
+                      ? "border-emerald-400/80 bg-emerald-400/10 text-emerald-100"
+                      : "border-emerald-500/10 bg-[#04110b]/95 text-emerald-200/80"
                   }`}
                 >
                   <p className="uppercase tracking-[0.3em] text-emerald-300/80">
@@ -94,9 +96,9 @@ export function StartScreen({ onStart }: StartScreenProps) {
                   How to play
                 </p>
                 <p className="mt-3 text-emerald-200/80">
-                  {selectedMode === 'board'
-                    ? 'Spot a matching person, then tap the square to mark it.'
-                    : 'Open the card and tap it again to shuffle a new creative prompt.'}
+                  {selectedMode === "board"
+                    ? "Spot a matching person, then tap the square to mark it."
+                    : "Open the card and tap it again to shuffle a new creative prompt."}
                 </p>
               </div>
               <button

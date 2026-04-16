@@ -8,7 +8,7 @@ interface BingoSquareProps {
 
 export function BingoSquare({ square, isWinning, onClick }: BingoSquareProps) {
   const baseClasses =
-    "group relative flex aspect-square items-center justify-center rounded-3xl border p-4 text-center text-sm leading-tight transition duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400/80";
+    "group relative flex aspect-square items-center justify-center rounded-3xl border p-4 text-center text-sm leading-tight whitespace-normal break-words transition duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400/80";
 
   const stateClasses = square.isFreeSpace
     ? "bg-[#0b1f0c] border-emerald-400/30 text-emerald-100 font-semibold shadow-inner shadow-emerald-500/10"
@@ -19,8 +19,8 @@ export function BingoSquare({ square, isWinning, onClick }: BingoSquareProps) {
       : "bg-[#020501] border-emerald-500/20 text-emerald-200 hover:border-emerald-300 hover:bg-[#082012] active:ring-2 active:ring-emerald-400/30";
 
   const labelClasses = square.isFreeSpace
-    ? "font-semibold uppercase tracking-[0.12em] text-emerald-100"
-    : "";
+    ? "font-semibold uppercase tracking-[0.12em] text-emerald-100 break-words"
+    : "break-words";
 
   return (
     <button

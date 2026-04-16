@@ -23,7 +23,8 @@ export function GameScreen({
   onDrawCard,
   onReset,
 }: GameScreenProps) {
-  const markedCount = gameMode === 'board' ? board.filter((square) => square.isMarked).length : 0;
+  const markedCount =
+    gameMode === "board" ? board.filter((square) => square.isMarked).length : 0;
 
   return (
     <main className="relative mx-auto flex min-h-screen max-w-6xl flex-col px-4 py-6 sm:px-6 lg:px-8">
@@ -58,20 +59,22 @@ export function GameScreen({
             <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="rounded-3xl bg-[#05120a]/95 p-4 text-emerald-100 shadow-lg shadow-emerald-500/10">
                 <p className="text-sm text-emerald-200/70">
-                  {gameMode === 'board' ? 'Squares marked' : 'Card deck mode'}
+                  {gameMode === "board" ? "Squares marked" : "Card deck mode"}
                 </p>
                 <p className="mt-2 text-3xl font-semibold text-emerald-100">
-                  {gameMode === 'board' ? `${markedCount}/24` : 'Tap to shuffle'}
+                  {gameMode === "board"
+                    ? `${markedCount}/24`
+                    : "Tap to shuffle"}
                 </p>
               </div>
               <div className="rounded-3xl bg-[#05120a]/95 p-4 text-emerald-100 shadow-lg shadow-emerald-500/10">
                 <p className="text-sm text-emerald-200/70">Status</p>
                 <p className="mt-2 text-xl font-semibold text-emerald-100">
-                  {gameMode === 'board'
+                  {gameMode === "board"
                     ? hasBingo
-                      ? 'Bingo achieved'
-                      : 'Keep going'
-                    : 'Draw a new question'}
+                      ? "Bingo achieved"
+                      : "Keep going"
+                    : "Draw a new question"}
                 </p>
               </div>
             </div>
@@ -83,9 +86,11 @@ export function GameScreen({
                 How to play
               </p>
               <ul className="mt-4 space-y-3 text-sm text-emerald-200/70">
-                {gameMode === 'board' ? (
+                {gameMode === "board" ? (
                   <>
-                    <li>• Tap a square when you meet someone who matches it.</li>
+                    <li>
+                      • Tap a square when you meet someone who matches it.
+                    </li>
                     <li>• The center space is free and already counts.</li>
                     <li>• Aim for a row, column, or diagonal to win.</li>
                   </>
@@ -103,9 +108,9 @@ export function GameScreen({
                 Quick tip
               </p>
               <p className="mt-3 text-sm text-emerald-200/70">
-                {gameMode === 'board'
-                  ? 'Focus on the easiest prompts first, then weave in the more surprising ones.'
-                  : 'Keep the energy flowing by shuffling questions between every player.'}
+                {gameMode === "board"
+                  ? "Focus on the easiest prompts first, then weave in the more surprising ones."
+                  : "Keep the energy flowing by shuffling questions between every player."}
               </p>
             </div>
           </div>
@@ -114,7 +119,7 @@ export function GameScreen({
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1.4fr_0.95fr]">
         <section className="rounded-[2rem] border border-emerald-500/10 bg-[#04100a]/95 p-6 shadow-2xl">
-          {gameMode === 'board' ? (
+          {gameMode === "board" ? (
             <BingoBoard
               board={board}
               winningSquareIds={winningSquareIds}
@@ -126,7 +131,7 @@ export function GameScreen({
         </section>
 
         <aside className="space-y-6">
-          {gameMode === 'board' && hasBingo && (
+          {gameMode === "board" && hasBingo && (
             <div className="rounded-[1.75rem] border border-slate-700/60 bg-slate-900/85 p-6 shadow-lg shadow-slate-950/20">
               <p className="text-sm uppercase tracking-[0.3em] text-slate-500">
                 Victory
@@ -143,10 +148,10 @@ export function GameScreen({
 
           <div className="rounded-[1.75rem] border border-white/10 bg-slate-950/90 p-6 shadow-inner">
             <p className="text-sm uppercase tracking-[0.3em] text-slate-500">
-              {gameMode === 'board' ? 'Board rules' : 'Deck rules'}
+              {gameMode === "board" ? "Board rules" : "Deck rules"}
             </p>
             <div className="mt-4 space-y-3 text-sm text-slate-300">
-              {gameMode === 'board' ? (
+              {gameMode === "board" ? (
                 <>
                   <p>• The free center square is pre-marked.</p>
                   <p>• Mark or unmark squares as you meet people.</p>
